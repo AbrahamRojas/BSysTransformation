@@ -1,0 +1,141 @@
+file<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css">
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="Alertas/sweetalert.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="Alertas/sweetalert.css">
+        <script>
+
+
+            function ValidarNew() {
+                var user = document.getElementById("nombre").value;
+                var pass = document.getElementById("pass").value;
+                var resx = "";
+                var tipouser = "";
+                var ruta = "http://www.empowerlabs.com/AppTransformation/App/pass.php?usuario=" + user + "&pass=" + pass;
+                $.ajax({
+                    type: "POST",
+                    url: ruta,
+                    async: true,
+                    success: function (datos) {
+                        var dataJson = eval(datos);
+                        var validaruser = false;
+                        var validarpass = false;
+                        for (var i in dataJson) {
+
+                            resx = dataJson[i].logueo;
+                        }
+                        if (resx == "Usuario incorrecto") {
+                            swal("Caution", "Check user", "error");
+                        } else if (resx == "Pass incorrecta") {
+                            swal("Caution", "Verify password", "error");
+                        }
+                        else if (resx == "True") {
+                            //swal("Enviar", "Correcto", "error");
+
+                            //alert(tipouser);
+                            Enviar();
+                        }
+                    },
+                    error: function (obj, error, objError) {
+                    }
+                });
+            }
+
+            function nobackbutton(){	
+   window.location.hash="no-back-button";
+   window.location.hash="Again-No-back-button" //chrome
+   window.onhashchange=function(){window.location.hash="no-back-button";}	
+}
+        </script>
+        <title>Business System Transformation</title>
+    </head>
+    <body onload="nobackbutton();">
+        <div data-role="page">
+    <div data-role="header" style="background:#dddddd;">
+        <h1 >Business System Transformation</h1>
+    </div>
+    <div data-role="main" class="ui-content">
+        <input type="text" name="nombre" id="nombre" placeholder="User (Intellibanks)">
+        <input type="password" name="pass" id="pass" placeholder="Password">
+        <input type="button" value="Enter" onclick="ValidarNew();" >
+    </div>
+</div> 
+
+<script type="text/javascript">
+
+    function Tomarnamecoach() {
+        var nameuser2 = document.getElementById("nombre").value;
+        var rutanamecoach = "http://www.empowerlabs.com/intellibanks/data/BSTransformacion/WebServiceNameCoach.php?usuario=" + nameuser2;
+        var resnamecoach = "";
+        $.ajax({
+            type: "POST",
+            url: rutanamecoach,
+            async: true,
+            success: function (datos3) {
+                var dataJson3 = eval(datos3);
+
+                for (var i in dataJson3) {
+                    resnamecoach = dataJson3[i].coach;
+                }
+                if (resnamecoach != "") {
+                    location.href = "principaluser.html?nombre="+nameuser2+"&coach="+resnamecoach;
+                }
+                else {
+                       swal("Caution", "You have not assigned a coach", "error");
+                }
+            },
+            error: function (obj, error, objError) {
+            }
+        });
+    }
+    function Enviar() {
+
+
+        var username = document.getElementById("nombre").value;
+        var ruta2 = "http://empowerlabs.com/intellibanks/data/Main/DBTXTjson.php?user=" + username;
+        var resx2 = "";
+        var coach = "";
+        $.ajax({
+            type: "POST",
+            url: ruta2,
+            async: true,
+            success: function (datos2) {
+                var dataJson2 = eval(datos2);
+
+                for (var i in dataJson2) {
+                    resx2 = dataJson2[i].user;
+                }
+                if (resx2 == "Si") {
+                    location.href = "principalcoach.html?nombre=" + username;
+                }
+                else {
+                    Tomarnamecoach();
+
+                }
+            },
+            error: function (obj, error, objError) {
+            }
+        });
+    }
+
+
+
+</script>
+   
+         <script src="cordova.js" id="xdkJScordova_"></script>
+
+    <script src="js/app.js"></script>           <!-- for your event code, see README and file comments for details -->
+    <script src="js/init-app.js"></script>      <!-- for your init code, see README and file comments for details -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see file for details -->
+
+    </body>
+</html>

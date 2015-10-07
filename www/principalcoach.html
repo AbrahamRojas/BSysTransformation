@@ -1,0 +1,547 @@
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width"/>
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <link rel='stylesheet' href='http://empowerlabs.com/archivos/Eric/EricTRansformation/Agenda/jquery-ui.min.css' /> 
+    <link href='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/fullcalendar.css' rel='stylesheet' />
+     <link href='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/fullcalendar.print.css' rel='stylesheet' media='print' /> 
+    <script src='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/lib/moment.min.js'></script> 
+    <script src='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/lib/jquery.min.js'></script>
+     <script src='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/fullcalendar.min.js'></script>
+     <script src='http://empowerlabs.com/conf/archivos/Eric/EricTRansformation/Agenda/lang-all.js'></script> 
+      <script src="Alertas/sweetalert.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="Alertas/sweetalert.css">
+     <!-------------CARGAR USUARIO------------->
+        <script type="text/javascript">
+            /// Variables globales tomadas de logueo en index.html
+            var userIntelliabnks = "";
+            var usertipo = "";
+
+            var paramstr = window.location.search.substr(1);
+            var paramarr = paramstr.split("&");
+            var paramstr2 = window.location.search.substr(1);
+            var paramarr2 = paramstr.split("&");
+            var params = {};
+            var params2 = {};
+
+            for (var i = 0; i < paramarr.length; i++) {
+                var tmparr = paramarr[i].split("=");
+                params[tmparr[0]] = tmparr[1];
+            }
+            if (params['nombre']) {
+
+                userIntelliabnks = params['nombre'];
+
+            } else {
+                console.log('No se envió el parámetro variable');
+            }
+
+            //////////////////////////////////////////////////////////////////
+            for (var i = 0; i < paramarr2.length; i++) {
+                var tmparr2 = paramarr2[i].split("=");
+                params2[tmparr2[0]] = tmparr2[1];
+            }
+            if (params2['tipo']) {
+
+                usertipo = params2['tipo'];
+            } else {
+                console.log('No se envió el parámetro variable tipo');
+            }       
+</script>
+        <script>        function index() {
+            location.href = "index.html";
+
+        }</script>
+
+</head>
+<body ng-app="intellisense" >
+     
+        <!--------Inicia Script de Programs---------------->
+
+        <script>
+                var app = angular.module('intellisense', []);
+    app.controller('UsersController', function ($scope, $http) {
+        $scope.items = {};
+        var ruta = "http://www.empowerlabs.com/intellibanks/data/BSTransformacion/WebService.php?coach=" + userIntelliabnks + "";
+        $http.get(ruta).success(function (data) {
+            $scope.items = data;
+
+        });
+    });
+        app.controller('UsersControllerPrograms', function ($scope, $http) {
+        $scope.items = {};
+        $http.get('http://www.empowerlabs.com/intellibanks/data/BSTransformacion/WebServicePrograms.php?coach=' + userIntelliabnks+"").success(function (data) {
+            $scope.items = data;
+
+        });
+    });
+
+               app.controller('UsersControllerEC', function ($scope, $http) {
+                $scope.items = {};
+                $http.get('http://www.empowerlabs.com/intellibanks/data/BSTransformacion/WebServiceECommunicator.php').success(function (data) {
+                    $scope.items = data;
+                });
+            });
+
+    </script>
+            <!--------Finaliza Script de Programs---------------->
+
+
+   
+
+          <!--------Inicia Script de Busqueda de Programs para coach------->
+
+    <script>
+        $(document).ready(function(){
+
+        $("#tfBuscar1").on("keyup", buscar1);
+        function buscar1() {
+            var tarjetas1 = $(".tarjeta1");
+            var texto1 = $("#tfBuscar1").val();
+            texto1 = texto1.toLowerCase();
+            tarjetas1.show();
+            for (var l = 0; l < tarjetas1.size(); l++) {
+                var contenido1 = tarjetas1.eq(l).text();
+                contenido1 = contenido1.toLowerCase();
+                var index1 = contenido1.indexOf(texto1);
+                if (index1 == -1) {
+                    tarjetas1.eq(l).hide();
+                }
+            }
+        }
+    });
+
+    </script>
+              <!--------Finaliza Script de Busqueda de Programs para coach------->
+
+    <!--------Inicia Pagina de Programs---------------->
+<div data-role="page" id="PagePrograms">
+  <div data-role="header">
+   <a href="#myPopup2" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-grid ui-btn-icon-notext ui-btn-right">Close</a>
+    <h1>Business System Transformation</h1>
+	
+
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#PagePrograms" style="background-color: #d6d6d6;"   data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-bullets ui-btn-icon-bottom ">Programs</a></li>
+            <li><a href="#PageCommunicator" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-audio ui-btn-icon-bottom ">Communicator</a></li>
+            <li ><a href="#pageusers" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-bottom ">Users</a></li>
+          </ul>
+
+        </div>
+  </div>
+       <div data-role="main" class="ui-content">
+        <!--center><a href="#" class="ui-btn ui-btn-inline ui-corner-all ui-icon-plus ui-btn-icon-left">Nuevo contacto</a></center><!----->
+           <div data-role="popup" id="myPopup2" class="ui-content">
+                <div data-role="controlgroup" data-type="vertical">
+                    <a href="#ChangePass" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-gear ui-btn-icon-left">Change Password</a>
+                    <a onclick="index();" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-power ui-btn-icon-left">Exit</a>
+                </div>
+            </div>   
+           
+            <input type="text" name="tfBuscar1" id="tfBuscar1" placeholder="Search"><!---------Campo buscar-->
+
+           <div ng-controller="UsersControllerPrograms">
+                 <table  data-role="table" class="ui-responsive ui-shadow" id="myTableEC">
+                      <thead>
+                          <tr style="background: #dddddd">
+                              <th data-priority="1"></th>
+                            </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="item in items" class="tarjeta1">
+                          <td data-transition="slide" data-icon="minus" id="{{item.Name}}/{{item.Description}}/{{item.Stage}}/{{item.Objetives}}/{{item.Coach}}/{{item.Type}}/{{item.Duration}}/{{item.CreateDate}}/{{item.Comments}}" onclick='verPrograms(this.id);' >{{item.Name}}<br>Objetivo: {{item.Objetives}}</td>
+                        </tr>
+                      </tbody>
+                </table>
+            </div>
+      
+    </div>
+</div> 
+
+    <!--------Finaliza Pagina de Programs---------------->
+      <!------------Inicia Ver Programs---------->
+<div data-role="page" id="viewPrograms">
+    <div data-role="header" style="background:#dddddd;">
+        <a href="#PagePrograms" data-transition="slide" data-direction="reverse" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-left ui-btn-icon-notext ui-corner-all ui-shadow">atras</a>
+     <h1 id="VerName"></h1>
+         </div>
+    <div data-role="main" class="ui-content">
+        <div class="ui-field-contain">
+                    <label >Description:</label>
+                    <textarea  name="verDescription" id="verDescription" readonly="on"></textarea>                   <label >Stage:</label>
+                    <input type="text" name="verStage" id="verStage" readonly="on">
+                <label >Objetives:</label>
+                    <textarea name="verObjetives" id="verObjetives" readonly="on">
+                        </textarea>
+                <label >Coach:</label>
+                    <input type="text" name="verCoach" id="verCoach" readonly="on">
+                <label >Type:</label>
+                    <input type="text" name="verType" id="verType" readonly="on">
+                <label >Duration :</label>
+                    <input type="text" name="verDuration" id="verDuration" readonly="on">
+                     <label >Comments:</label>
+                     <textarea  name="verComments" id="verComments" readonly="on">
+                 </textarea>
+        </div>
+    </div>
+</div> 
+            <!------------ Finaliza Ver Programs---------->
+       <!-----------Inicia-Script Ver Programs---------->
+    <script>
+         function verPrograms(y) {
+                //alert(z);
+                var palabras2 = y.split("/");
+                document.getElementById('VerName').innerHTML = palabras2[0];
+                document.getElementById('verDescription').value = palabras2[1];
+                document.getElementById('verStage').value = palabras2[2];
+                document.getElementById('verObjetives').value = palabras2[3];
+                document.getElementById('verCoach').value = palabras2[4];
+                document.getElementById('verType').value = palabras2[5];
+                document.getElementById('verDuration').value = palabras2[6];
+                document.getElementById('verComments').value = palabras2[8];
+                location.href = "#viewPrograms";
+            }
+
+    </script> 
+             <!-----------Finaliza-Script Ver Programs---------->
+    
+
+
+            <!--------Inicia Pagina de PageCommunicator---------------->
+    <div data-role="page" id="PageCommunicator">
+  <!-------------->
+          <div data-role="header">
+   <a href="#myPopup3" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-grid ui-btn-icon-notext ui-btn-right">Close</a>
+    <h1>Business System Transformation</h1>
+	
+
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#PagePrograms" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-bullets ui-btn-icon-bottom ">Programs</a></li>
+            <li><a href="#PageCommunicator" style="background-color: #d6d6d6;"   data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-audio ui-btn-icon-bottom ">Communicator</a></li>
+            <li ><a href="#pageusers" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-bottom ">Users</a></li>
+          </ul>
+
+        </div>
+  </div>
+       <div data-role="main" class="ui-content">
+        <!--center><a href="#" class="ui-btn ui-btn-inline ui-corner-all ui-icon-plus ui-btn-icon-left">Nuevo contacto</a></center><!----->
+           <div data-role="popup" id="myPopup3" class="ui-content">
+                <div data-role="controlgroup" data-type="vertical">
+                    <a href="#ChangePass" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-gear ui-btn-icon-left">Change Password</a>
+                    <a onclick="index();" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-power ui-btn-icon-left">Exit</a>
+                </div>
+            </div> 
+        <!--center><a href="#" class="ui-btn ui-btn-inline ui-corner-all ui-icon-plus ui-btn-icon-left">Nuevo contacto</a></center><!----->
+               <input type="text" name="tfBuscar1" id="tfBuscar1" placeholder="Search"><!---------Campo buscar-->
+
+           <div ng-controller="UsersControllerEC">
+                 <table  data-role="table" class="ui-responsive ui-shadow" id="myTableEC">
+                      <thead>
+                          <tr style="background: #dddddd">
+                              <th data-priority="1"></th>
+                            </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="item in items" class="tarjeta1">
+                          <td data-transition="slide" data-icon="minus" id="{{item.Subject}}/{{item.Description}}/{{item.Author}}/{{item.Category}}/{{item.Area}}/{{item.Priority}}/{{item.Date}}/{{item.Active}}/{{item.Encabezado}}" onclick='verCommuicator(this.id);' >{{item.Encabezado}}<br> {{item.Subject}} </td>
+                        </tr>
+                      </tbody>
+                </table>
+            </div>
+ 
+    </div>
+</div> 
+            <!--------Finaliza Pagina de PageCommunicator---------------->
+    
+    <!------------Inicia Ver viewCommunicator---------->
+<div data-role="page" id="viewCommunicator2">
+
+    <div data-role="header" style="background:#dddddd;">
+                                   
+        <a href="#PageCommunicator" data-transition="slide" data-direction="reverse" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-left ui-btn-icon-notext ui-corner-all ui-shadow">atras</a>
+        <H1 id="verEncabezado"></H1>
+    </div>
+                   
+                   
+
+    <div data-role="main" class="ui-content">
+        <div class="ui-field-contain">
+             <label >Subject:</label>
+                    <input type="text" name="verSubjectEC" id="verSubjectEC" readonly="on">
+           
+                <label >Description:</label>
+                    <textarea  name="verDescriptionEC" id="verDescriptionEC" readonly="on"></textarea>  
+                 <label >Author:</label>
+                    <input type="text" name="verAuthorEC" id="verAuthorEC" readonly="on">
+                <label >Category:</label>
+                    <textarea name="verCategoryEC" id="verCategoryEC" readonly="on">
+                        </textarea>
+                <label >Area:</label>
+                    <input type="text" name="verAreaEC" id="verAreaEC" readonly="on">
+                <label >Priority:</label>
+
+                    <input type="text" name="verPriorityEC" id="verPriorityEC" readonly="on">
+                <label >Date:</label>
+                    <input type="text" name="verDateEC" id="verDateEC" readonly="on">
+                <label >Active:</label>
+                    <input type="text" name="verActiveEC" id="verActiveEC" readonly="on">
+        </div>
+    </div>
+</div> 
+            <!------------ Finaliza Ver viewCommunicator---------->
+ 
+
+        <!-----------Inicia-Script Ver viewCommunicator---------->
+    <script>
+        function verCommuicator(a) {
+            //alert(z);
+            var palabras3 = a.split("/");
+            document.getElementById('verSubjectEC').value = palabras3[0];
+
+            document.getElementById('verDescriptionEC').value = palabras3[1];
+            document.getElementById('verAuthorEC').value = palabras3[2];
+
+            document.getElementById('verCategoryEC').value = palabras3[3];
+            document.getElementById('verAreaEC').value = palabras3[4];
+
+            document.getElementById('verPriorityEC').value = palabras3[5];
+            document.getElementById('verDateEC').value = palabras3[6];
+            document.getElementById('verActiveEC').value = palabras3[7];
+            document.getElementById('verEncabezado').innerHTML = palabras3[8];
+            location.href = "#viewCommunicator2";
+        }
+
+    </script> 
+             <!-----------Finaliza-Script Ver viewCommunicator---------->
+
+
+              <!--------Inicia Pagina de NewCommunicator---------------->
+    <div data-role="page" id="PageNewCommunicator">
+  <div data-role="header">
+    <a href="#PagePrograms" data-transition="slide" data-direction="reverse" class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left ui-btn-icon-notext ui-corner-all ui-shadow">Home</a>
+        <a id="linkusers"   href="#pageusers" data-transition="slide" data-direction="reverse" class="ui-btn ui-btn-inline ui-icon-user ui-btn-icon-right ui-btn-icon-notext ui-corner-all ui-shadow">Home</a>    
+    
+    <h1>Business System Transformation</h1>
+	
+
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#PagePrograms" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-bullets ui-btn-icon-bottom ">Programs</a></li>
+            <li><a href="#PageCommunicator" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-audio ui-btn-icon-bottom ">Communicator</a></li>
+            <li ><a href="#PageNewCommunicator" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-plus ui-btn-icon-bottom ">New Communicator</a></li>
+          </ul>
+
+        </div>
+  </div>
+
+<div data-role="main" class="ui-content">
+        <!--center><a href="#" class="ui-btn ui-btn-inline ui-corner-all ui-icon-plus ui-btn-icon-left">Agregar actividad</a></center><!----->
+        <div id="calendar" style="width: 100%; height: 100%; z-index: 1;"></div><!---->
+    </div>
+
+</div> 
+            <!--------Finaliza Pagina de NewCommunicator---------------->
+
+
+          <!--------Inicia Script de Busqueda de userss para coach------->
+
+    <script>
+        $(document).ready(function(){
+
+        $("#tfBuscar2").on("keyup", buscar2);
+        function buscar2() {
+            var tarjetas2 = $(".tarjeta2");
+            var texto2 = $("#tfBuscar2").val();
+            texto2 = texto2.toLowerCase();
+            tarjetas2.show();
+            for (var l = 0; l < tarjetas2.size(); l++) {
+                var contenido2 = tarjetas2.eq(l).text();
+                contenido2 = contenido2.toLowerCase();
+                var index2 = contenido2.indexOf(texto2);
+                if (index2 == -1) {
+                    tarjetas2.eq(l).hide();
+                }
+            }
+        }
+    });
+
+    </script>
+              <!--------Finaliza Script de Busqueda de userss para coach------->
+
+
+                  <!--------Inicia Pagina de Page USERS---------------->
+    <div data-role="page" id="pageusers">
+           <div data-role="header">
+   <a href="#myPopup4" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-grid ui-btn-icon-notext ui-btn-right">Close</a>
+    <h1>Business System Transformation</h1>
+	
+
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#PagePrograms" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-bullets ui-btn-icon-bottom ">Programs</a></li>
+            <li><a href="#PageCommunicator" data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-audio ui-btn-icon-bottom ">Communicator</a></li>
+            <li ><a href="#pageusers" style="background-color: #d6d6d6;"   data-transition="flow" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-bottom ">Users</a></li>
+          </ul>
+
+        </div>
+  </div>
+       <div data-role="main" class="ui-content">
+        <!--center><a href="#" class="ui-btn ui-btn-inline ui-corner-all ui-icon-plus ui-btn-icon-left">Nuevo contacto</a></center><!----->
+           <div data-role="popup" id="myPopup4" class="ui-content">
+                <div data-role="controlgroup" data-type="vertical">
+                    <a href="#ChangePass" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-gear ui-btn-icon-left">Change Password</a>
+                    <a onclick="index();" data-transition="slide" class="ui-btn ui-corner-all ui-btn ui-icon-power ui-btn-icon-left">Exit</a>
+                </div>
+            </div> 
+                               <input type="text" name="tfBuscar2" id="tfBuscar2" placeholder="Search"><!---------Campo buscar-->
+
+       <div ng-controller="UsersController">
+                 <table  data-role="table" class="ui-responsive ui-shadow" id="myTable">
+                      <thead>
+                          <tr style="background: #dddddd">
+                              <th data-priority="1"></th>
+                            </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="item in items" class="tarjeta2" >
+                          <td data-transition="slide" data-icon="minus" id="{{item.Name}}?{{item.Phone}}?{{item.Mobile}}?{{item.age}}?{{item.Email}}?{{item.Type}}?{{item.Ocupation}}?{{item.Status}}" onclick='verUsers(this.id);' >{{item.Name}}<br>{{item.age}} years</td>
+                        </tr>
+                      </tbody>
+                </table>
+            </div>
+
+  </div>
+
+</div>
+
+     <!------------Inicia Ver User---------->
+<div data-role="page" id="viewContact">
+    <div data-role="header" style="background:#dddddd;">
+        <a href="#pageusers" data-transition="slide" data-direction="reverse" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-left ui-btn-icon-notext ui-corner-all ui-shadow">atras</a><H1 id="VerNameUser"></H1>
+    </div>
+    <div data-role="main" class="ui-content">
+        <div class="ui-field-contain">
+                    <label >Phone:</label>
+                    <input type="text" name="verPhoneUser" id="verPhoneUser" readonly="on">
+                <label >Movil:</label>
+                    <input type="text" name="verMovilUser" id="verMovilUser" readonly="on">
+                <label >Age:</label>
+                    <input type="text" name="verAgeUser" id="verAgeUser" readonly="on">
+                <label >Email:</label>
+                    <input type="text" name="verEmailUser" id="verEmailUser" readonly="on">
+                <label >Type:</label>
+                    <input type="text" name="verTypeUser" id="verTypeUser" readonly="on">
+                <label >Ocupation:</label>
+                    <input type="text" name="verOcupationUser" id="verOcupationUser" readonly="on">
+                <label >Status:</label>
+                    <input type="text" name="verStatusUser" id="verStatusUser" readonly="on">
+      </div>
+    </div>
+</div> 
+            <!------------ Finaliza Ver User---------->
+         <!-----------Inicia-Script Ver User---------->
+
+    <script>
+        function verUsers(z) {
+            //alert(z);
+            var palabras = z.split("?");
+            document.getElementById('VerNameUser').innerHTML = palabras[0];
+            document.getElementById('verPhoneUser').value = palabras[1];
+            document.getElementById('verMovilUser').value = palabras[2];
+            document.getElementById('verAgeUser').value = palabras[3];
+            document.getElementById('verEmailUser').value = palabras[4];
+            document.getElementById('verTypeUser').value = palabras[5];
+            document.getElementById('verOcupationUser').value = palabras[6];
+            document.getElementById('verStatusUser').value = palabras[7];
+            location.href = "#viewContact";
+        }
+
+    </script> 
+             <!-----------Finaliza-Script Ver User---------->
+
+
+            <!--------Finaliza Pagina de Page USERS---------------->
+
+        <!---------------CAMBIAR PASS------------------->
+<div data-role="page" id="ChangePass">
+    <div data-role="header" style="background:#dddddd;">
+        <h1 >Business System Transformation</h1>
+    </div>
+    <div data-role="main" class="ui-content">
+        <input type="password" name="PassActual" id="PassActual" placeholder="Current Password ">
+        <input type="password" name="PassNueva" id="PassNueva" placeholder="New Password">
+        <input type="password" name="PassNueva2" id="PassNueva2" placeholder="Repeat New Password" >
+        <a id="GPass" onclick="Reset();" class="ui-btn ui-corner-all ui-icon-check ui-btn-icon-left">Save</a>
+        <a href="#" data-rel="back" data-transition="slide" data-direction="reverse" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left">Cancel</a>        
+    </div>
+</div> 
+        <!------------MANDAR RESET PASSS---------------->
+        <script type="text/javascript">
+            var VerPass = "";
+            var VerPass2 = "";
+            function Reset() {
+                var userA = document.getElementById("PassActual").value;
+                var pass = document.getElementById("PassNueva").value;
+                var pass2 = document.getElementById("PassNueva2").value;
+                var rutaVer = "http://www.empowerlabs.com/AppTransformation/App/pass.php?usuario=" + userIntelliabnks + "&pass=" + userA;
+                var rutaVer2 = "http://www.empowerlabs.com/AppTransformation/App/ResetPass.php?usuario=" + userIntelliabnks + "&pass=" + userA + "&reset=" + pass;
+                if (pass == pass2) {
+                    $.ajax({
+                        type: "POST",
+                        url: rutaVer,
+                        async: true,
+                        success: function (datos) {
+                            var dataJson = eval(datos);
+                            var validaruser = false;
+                            var validarpass = false;
+                            for (var i in dataJson) {
+
+                                VerPass = dataJson[i].logueo;
+
+                            }
+                            if (VerPass == "True") {
+                                //////////
+                                $.ajax({
+                                    type: "POST",
+                                    url: rutaVer2,
+                                    async: true,
+                                    success: function (datos) {
+                                    },
+                                    error: function (obj, error, objError) {
+                                    }
+                                });
+                                swal("Password", "Updated Password", "success");
+                                //////
+                            } else {
+                                swal("Precaution", "Check password", "error");
+                            }
+                        },
+                        error: function (obj, error, objError) {
+                        }
+                    });
+                } else {
+                    swal("Precaution", "Passwords do not match", "error");
+                }
+            }
+        </script>
+
+                  
+
+     <style>
+th {
+    border-bottom: 1px solid #d6d6d6;
+}
+
+tr:nth-child(even) {
+    background: #e9e9e9;
+}
+</style>
+</body>
+</html>
